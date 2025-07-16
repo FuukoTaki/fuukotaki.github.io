@@ -1,0 +1,12 @@
+/* Normalize Styless */
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Display block is used to fit canvas size to screen */
+canvas {
+    background-color: rgb(57, 120, 168);
+    display: block;
+}
