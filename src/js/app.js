@@ -56,14 +56,14 @@ window.addEventListener("DOMContentLoaded", () => {
             scale += scaleIncrement;
             scale = Math.max(scaleMin, Math.min(scale, scaleMax));
             scale = parseFloat(scale.toFixed(1));
-            vCam.setCoords(scale);
+            vCam.setCentralPosition();
         }
 
         if (e.deltaY > 0 && scale > scaleMin) {
             scale -= scaleIncrement;
             scale = Math.max(scaleMin, Math.min(scale, scaleMax));
             scale = parseFloat(scale.toFixed(1));
-            vCam.setCoords(scale);
+            vCam.setCentralPosition();
         }
 
         console.log(scale);
@@ -83,7 +83,7 @@ export function startGame() {
         island.length * 64 / 2 - 128,
         island[0].length * 64 / 2 - 192);
 
-    vCam = new VCam(canvas, ctx, scale, player, 12);
+    vCam = new VCam(player, 12);
 
     // Start game loop.
     requestAnimationFrame(gameLoopController);

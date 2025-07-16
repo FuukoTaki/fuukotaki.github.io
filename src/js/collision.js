@@ -10,29 +10,24 @@ export const playerAttackCollisions = [];
 export function drawMapCollisions() {
 
     for (let i = 0; i < mapCollisions.length; i++) {
-
         const hitbox = mapCollisions[i];
         hitbox.draw();
     }
 
     for (let i = 0; i < terrainDecorations.length; i++) {
-
         const hitbox = terrainDecorations[i];
         hitbox.draw();
     }
 }
 
 export function drawPlayerAttackCollisions() {
-
     for (let i = 0; i < playerAttackCollisions.length; i++) {
-
         const hitbox = playerAttackCollisions[i];
-        // hitbox.draw();
+        hitbox.draw();
     }
 }
 
 export function addPlayerAttackCollision(x, y, width, height) {
-
     const hitbox = new Hitbox(x, y, width, height, 1);
     playerAttackCollisions.push(hitbox);
     console.log("Collision added.");
@@ -70,10 +65,14 @@ export function checkPlayerAttackCollisionsAndTerrainDecorationsCollisions() {
         i--;
     }
 
-    for (let i = 0; i < playerAttackCollisions.length; i++) {
+    // Tick player collisions and removes the disabled ones.
+    let l = playerAttackCollisions.length - 1;
 
-        const hitbox = playerAttackCollisions[i];
+    while (l > - 1) {
+        const hitbox = playerAttackCollisions[l];
         hitbox.tick();
+        if (!hitbox.enabled) playerAttackCollisions.splice(i, 1);
+        l--;
     }
 }
 

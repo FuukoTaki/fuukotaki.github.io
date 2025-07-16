@@ -9,19 +9,11 @@ import { mapCollisions, terrainDecorations } from "./globalVariables.js";
 import { KeysInput } from "./keysController.js";
 import { Hitbox } from "./hitbox.js";
 import { isOverlapping, addPlayerAttackCollision } from "./collision.js";
+import { cardinalDirectionsAvailable } from "./globalVariables.js";
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
 // -- VARIABLES --
-
-// Used to access all player directions availables.
-const cardinalDirectionsAvailable = {
-    FRONT: "FRONT",
-    SIDE34: "SIDE34",
-    SIDE: "SIDE",
-    BACK34: "BACK34",
-    BACK: "BACK"
-};
 
 // Used to access all player animations availables.
 const animationsAvailable = {

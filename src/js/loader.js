@@ -45,7 +45,11 @@ const spritesURL = {
     mushroom3: "./src/img/map/mushroom3.png",
 };
 
-// Start loading spritesheets.
+/**
+ * Star loading all spritesheets. 
+ * When all of them are loaded, call a function to start the game
+ * configuration.
+ */
 export function loadSpritesheets() {
 
     // Debug.
