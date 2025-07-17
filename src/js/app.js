@@ -1,14 +1,10 @@
-// ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-
-// -- IMPORTS --
-
 import { addKeysListeners } from "./keysController.js";
 import { Player } from "./player.js";
 import { gameLoopController } from "./gameLoopController.js";
 import { VCam } from "./vCam.js";
-import { island, drawMap } from "./map.js";
 import { spritesSRC, loadSpritesheets } from "./loader.js";
-import { drawMapCollisions, drawPlayerAttackCollisions, checkPlayerAttackCollisionsAndTerrainDecorationsCollisions } from "./collision.js";
+import { generateMap, mapGeneration } from "./mapGeneration.js";
+import { addTerrainLimits, addTerrainObjects, drawMapFirstFloor, drawMapSecondFloor, drawTerrainObjects } from "./mapDrawing.js";
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
@@ -65,9 +61,6 @@ window.addEventListener("DOMContentLoaded", () => {
             scale = parseFloat(scale.toFixed(1));
             vCam.setCentralPosition();
         }
-
-        console.log(scale);
-
     }, { passive: false });
 
     // Start the loading of all spritesheets images.
@@ -76,12 +69,16 @@ window.addEventListener("DOMContentLoaded", () => {
 
 export function startGame() {
 
+    generateMap();
+    addTerrainLimits();
+    addTerrainObjects();
+
     // Enable keys detection.
     addKeysListeners();
 
     player = new Player(loadPlayerSprites(),
-        island.length * 64 / 2 - 128,
-        island[0].length * 64 / 2 - 192);
+        Math.floor(mapGeneration.length * 64 / 2 - 128),
+        Math.floor(mapGeneration[0].length * 64 / 2 - 160));
 
     vCam = new VCam(player, 12);
 
@@ -108,19 +105,8 @@ function loadPlayerSprites() {
 
 export function gameLoop() {
     vCam.track(scale);
-    drawMap();
+    drawMapFirstFloor();
+    drawMapSecondFloor();
+    drawTerrainObjects();
     player.tick(ctx);
-
-    if (player.x < 0 - player.width / 2 + 32) player.x = 0 - player.width / 2 + 32;
-    if (player.y < 0 - player.height / 2) player.y = 0 - player.height / 2;
-
-    if (player.x > island.length * 64 - player.width / 2 - 32) player.x = island.length * 64 - player.width / 2 - 32;
-    if (player.y > (island[0].length - 2) * 64 - player.height / 2) player.y = (island[0].length - 2) * 64 - player.height / 2;
-
-    drawMapCollisions();
-    drawPlayerAttackCollisions();
-
-    checkPlayerAttackCollisionsAndTerrainDecorationsCollisions();
 };
-
-// ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----

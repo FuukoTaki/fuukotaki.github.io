@@ -1,15 +1,10 @@
-// ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-
-// -- IMPORTS --
-
 import { Animation } from "./animation.js";
 import { Entity } from "./entity.js";
-import { mapCollisions, terrainDecorations } from "./globalVariables.js";
-
 import { KeysInput } from "./keysController.js";
 import { Hitbox } from "./hitbox.js";
 import { isOverlapping, addPlayerAttackCollision } from "./collision.js";
 import { cardinalDirectionsAvailable } from "./globalVariables.js";
+import { mapLimits, terrainObjects } from "./mapDrawing.js";
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
@@ -111,8 +106,7 @@ export class Player extends Entity {
         this.y = Math.floor(this.y);
 
         this.updateHitbox();
-        this.draw(ctx);
-        this.hitbox.draw();
+        // this.hitbox.draw();
     }
 
     slash() {
@@ -158,7 +152,6 @@ export class Player extends Entity {
         }
     }
 
-    // Performs roll animation.
     roll() {
         if (this.isSlashing) return;
 
@@ -203,15 +196,64 @@ export class Player extends Entity {
                 if (this.direction === "right") dx += s;
             }
 
-            // Verifica colisiones antes de mover
+            const maxCorrection = 16;
+            let moved = false;
+
+            // Solo aplicar corner correction en cardinales
+            const isCardinal = (
+                this.cardinalDirection === cardinalDirectionsAvailable.FRONT ||
+                this.cardinalDirection === cardinalDirectionsAvailable.BACK ||
+                this.cardinalDirection === cardinalDirectionsAvailable.SIDE
+            );
+
             if (this.canMove(this.x + dx, this.y + dy)) {
                 this.x += dx;
                 this.y += dy;
-            } else {
-                // Intentar solo eje X
+                moved = true;
+            }
+
+            if (!moved && isCardinal) {
+                // Movimiento vertical puro
+                if (dx === 0 && dy !== 0) {
+                    for (let i = 1; i <= maxCorrection; i++) {
+                        if (this.canMove(this.x + i, this.y + dy)) {
+                            this.x += i;
+                            this.y += dy;
+                            moved = true;
+                            break;
+                        }
+                        if (this.canMove(this.x - i, this.y + dy)) {
+                            this.x -= i;
+                            this.y += dy;
+                            moved = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Movimiento horizontal puro
+                if (dy === 0 && dx !== 0) {
+                    for (let i = 1; i <= maxCorrection; i++) {
+                        if (this.canMove(this.x + dx, this.y + i)) {
+                            this.x += dx;
+                            this.y += i;
+                            moved = true;
+                            break;
+                        }
+                        if (this.canMove(this.x + dx, this.y - i)) {
+                            this.x += dx;
+                            this.y -= i;
+                            moved = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!moved) {
+                // Último intento por ejes separados
                 if (this.canMove(this.x + dx, this.y)) this.x += dx;
-                // Intentar solo eje Y
-                if (this.canMove(this.x, this.y + dy)) this.y += dy;
+                else if (this.canMove(this.x, this.y + dy)) this.y += dy;
             }
 
             this.updateHitbox();
@@ -223,6 +265,7 @@ export class Player extends Entity {
             }
         }
     }
+
 
     // Performs WASD movement.
 
@@ -323,19 +366,17 @@ export class Player extends Entity {
         this.updateHitbox();
     }
 
-
-
-
     canMove(newX, newY) {
+
         this.hitbox.x = newX + this.width / 2 - 12;
         this.hitbox.y = newY + this.height / 2 + 8;
 
-        for (let i = 0; i < mapCollisions.length; i++) {
-            if (isOverlapping(this.hitbox, mapCollisions[i])) return false;
+        for (let i = 0; i < mapLimits.length; i++) {
+            if (isOverlapping(this.hitbox, mapLimits[i])) return false;
         }
 
-        for (let i = 0; i < terrainDecorations.length; i++) {
-            if (isOverlapping(this.hitbox, terrainDecorations[i])) return false;
+        for (let i = 0; i < terrainObjects.length; i++) {
+            if (isOverlapping(this.hitbox, terrainObjects[i].hitbox)) return false;
         }
 
         return true;

@@ -1,6 +1,6 @@
 /**
  * This class provides all the metadata needed to play an animation.
- * It needs Entity class to check whick animation must be played.
+ * It needs Entity class to check which animation must be played.
 */
 export class Animation {
 

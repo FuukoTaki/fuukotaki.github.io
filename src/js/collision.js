@@ -1,31 +1,10 @@
 import { Hitbox } from "./hitbox.js";
-import { mapCollisions, terrainDecorations } from "./globalVariables.js";
-import { island } from "./map.js";
+import { terrainDecorations } from "./globalVariables.js";
 
 // This is used to limit the player and entities movement.
 // Prevents them from moving to a non desired place.
 
 export const playerAttackCollisions = [];
-
-export function drawMapCollisions() {
-
-    for (let i = 0; i < mapCollisions.length; i++) {
-        const hitbox = mapCollisions[i];
-        hitbox.draw();
-    }
-
-    for (let i = 0; i < terrainDecorations.length; i++) {
-        const hitbox = terrainDecorations[i];
-        hitbox.draw();
-    }
-}
-
-export function drawPlayerAttackCollisions() {
-    for (let i = 0; i < playerAttackCollisions.length; i++) {
-        const hitbox = playerAttackCollisions[i];
-        hitbox.draw();
-    }
-}
 
 export function addPlayerAttackCollision(x, y, width, height) {
     const hitbox = new Hitbox(x, y, width, height, 1);
